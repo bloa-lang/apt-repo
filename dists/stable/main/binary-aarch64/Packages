@@ -1,0 +1,13 @@
+Package: bloa
+Version: 0.1.0alpha
+Architecture: aarch64
+Maintainer: bloa-lang
+Filename: pool/main/bloa_0.1.0alpha_aarch64.deb
+Size: 393248
+MD5sum: 5a47be2b241b8a68a586efcbdb8b9f2f
+SHA1: 42c560b1382d5ff1d9784ac96d6c2767044aec8b
+SHA256: 3de2d85de9d725cfa4803deb63d973fe8441597969d37be8a270effc7502ad0d
+Section: base
+Priority: optional
+Description: BLOA Language Interpreter
+
