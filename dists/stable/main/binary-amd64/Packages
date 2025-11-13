@@ -1,0 +1,13 @@
+Package: bloa
+Version: 0.1.0alpha
+Architecture: amd64
+Maintainer: BLOA Contributor <gameplaytebakgambard@gmail.com>
+Filename: pool/main/b/bloa/bloa_0.1.0alpha_amd64.deb
+Size: 392704
+MD5sum: fd8036ac9eef3e4b15d792d0658e34fb
+SHA1: 7a2c8630e2457d3a570e848b69a43937d8332875
+SHA256: ae638c9a3c94dbb31cd6a83ed3c686d7041480561158088e02fb187d9fc1cd67
+Section: interpreters
+Priority: optional
+Description: BLOA — Lightweight scripting language
+
