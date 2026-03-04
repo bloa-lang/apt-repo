@@ -1,82 +1,62 @@
-#!/bin/bash
-# scripts/generate-release.sh
-# Generate Release file for the apt repository
-
+#!/usr/bin/env bash
 set -euo pipefail
 
-DIST_DIR="${1:-.}"
+DIST_ROOT="${1:-.}"
 DIST_NAME="${2:-stable}"
 COMP="${3:-main}"
 
+DIST_DIR="$DIST_ROOT/$COMP"
+RELEASE_FILE="$DIST_ROOT/Release"
+
 if [ ! -d "$DIST_DIR" ]; then
-  echo "ERROR: Distribution directory $DIST_DIR not found" >&2
+  echo "ERROR: $DIST_DIR not found"
   exit 1
 fi
 
-# compute hashes for all Packages files
-declare -A sha256sums
-declare -A sha1sums
-declare -A md5sums
+declare -a arch_list
+declare -a md5_lines
+declare -a sha1_lines
+declare -a sha256_lines
 
-arch_list=()
-for binary_dir in "$DIST_DIR"/binary-*; do
-  [ -d "$binary_dir" ] || continue
+for binary_dir in $(ls -d "$DIST_DIR"/binary-* 2>/dev/null | sort); do
   arch=$(basename "$binary_dir" | sed 's/^binary-//')
   arch_list+=("$arch")
-  
-  packages_file="$binary_dir/Packages"
-  packages_gz="$packages_file.gz"
-  
-  if [ -f "$packages_file" ]; then
-    size=$(stat -f%z "$packages_file" 2>/dev/null || stat -c%s "$packages_file" 2>/dev/null || echo 0)
-    md5=$(md5sum "$packages_file" | awk '{print $1}')
-    sha1=$(sha1sum "$packages_file" | awk '{print $1}')
-    sha256=$(sha256sum "$packages_file" | awk '{print $1}')
-    
-    md5sums["$arch"]="$md5 $size $COMP/binary-$arch/Packages"
-    sha1sums["$arch"]="$sha1 $size $COMP/binary-$arch/Packages"
-    sha256sums["$arch"]="$sha256 $size $COMP/binary-$arch/Packages"
-  fi
-  
-  if [ -f "$packages_gz" ]; then
-    size=$(stat -f%z "$packages_gz" 2>/dev/null || stat -c%s "$packages_gz" 2>/dev/null || echo 0)
-    md5=$(md5sum "$packages_gz" | awk '{print $1}')
-    sha1=$(sha1sum "$packages_gz" | awk '{print $1}')
-    sha256=$(sha256sum "$packages_gz" | awk '{print $1}')
-    
-    md5sums["$arch+gz"]="$md5 $size $COMP/binary-$arch/Packages.gz"
-    sha1sums["$arch+gz"]="$sha1 $size $COMP/binary-$arch/Packages.gz"
-    sha256sums["$arch+gz"]="$sha256 $size $COMP/binary-$arch/Packages.gz"
-  fi
+
+  for file in Packages Packages.gz; do
+    full="$binary_dir/$file"
+    [ -f "$full" ] || continue
+
+    rel_path="$COMP/binary-$arch/$file"
+    size=$(stat -c%s "$full")
+
+    md5=$(md5sum "$full" | awk '{print $1}')
+    sha1=$(sha1sum "$full" | awk '{print $1}')
+    sha256=$(sha256sum "$full" | awk '{print $1}')
+
+    md5_lines+=(" $md5 $size $rel_path")
+    sha1_lines+=(" $sha1 $size $rel_path")
+    sha256_lines+=(" $sha256 $size $rel_path")
+  done
 done
 
-# generate Release file
-release_file="$DIST_DIR/Release"
-date_str=$(date -u +'%a, %d %b %Y %H:%M:%S %Z')
 arch_str=$(IFS=' '; echo "${arch_list[*]}")
+date_str=$(date -u +"%a, %d %b %Y %H:%M:%S UTC")
 
 {
   echo "Origin: bloa-lang"
-  echo "Label: bloa-src"
+  echo "Label: bloa"
   echo "Suite: $DIST_NAME"
-  echo "Version: 1.0"
   echo "Codename: $DIST_NAME"
   echo "Date: $date_str"
   echo "Architectures: $arch_str"
   echo "Components: $COMP"
-  echo "Description: Official bloa-src APT repository $DIST_NAME release"
+  echo "Description: Official bloa APT repository"
   echo "MD5Sum:"
-  for k in "${!md5sums[@]}"; do
-    echo " ${md5sums[$k]}"
-  done
+  printf "%s\n" "${md5_lines[@]}" | sort
   echo "SHA1:"
-  for k in "${!sha1sums[@]}"; do
-    echo " ${sha1sums[$k]}"
-  done
+  printf "%s\n" "${sha1_lines[@]}" | sort
   echo "SHA256:"
-  for k in "${!sha256sums[@]}"; do
-    echo " ${sha256sums[$k]}"
-  done
-} > "$release_file"
+  printf "%s\n" "${sha256_lines[@]}" | sort
+} > "$RELEASE_FILE"
 
-echo "Generated Release file: $release_file"
+echo "Release file generated at $RELEASE_FILE"
