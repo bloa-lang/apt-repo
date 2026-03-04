@@ -1,0 +1,6 @@
+# ignore build directories
+/POOL
+/lists
+
+# ignore temporary release tracker
+.latest_release

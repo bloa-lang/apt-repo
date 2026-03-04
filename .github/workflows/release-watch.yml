@@ -1,0 +1,53 @@
+name: "Upstream release watcher & package builder"
+
+on:
+  schedule:
+    # every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  check_and_build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Determine latest upstream release
+        id: check
+        run: |
+          set -eux
+          UPSTREAM="bloa-lang/bloa-src"
+          api="https://api.github.com/repos/$UPSTREAM/releases/latest"
+          latest=$(curl -sL "$api" | jq -r .tag_name)
+          echo "Latest upstream tag = $latest"
+
+          if [ -f .latest_release ]; then
+            old=$(cat .latest_release)
+          else
+            old=""
+          fi
+          echo "Previous recorded tag = $old"
+
+          echo "latest=$latest" >> $GITHUB_OUTPUT
+          if [ "$latest" != "$old" ]; then
+            echo "new=true" >> $GITHUB_OUTPUT
+            echo "$latest" > .latest_release
+          else
+            echo "new=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build package for new release
+        if: steps.check.outputs.new == 'true'
+        run: |
+          chmod +x scripts/build-package.sh
+          scripts/build-package.sh "${{ steps.check.outputs.latest }}"
+
+      - name: Commit generated files
+        if: steps.check.outputs.new == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add pool dists .latest_release
+          git diff --quiet || git commit -m "Automated build for release ${{ steps.check.outputs.latest }}"
+          git push
