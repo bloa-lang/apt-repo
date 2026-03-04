@@ -10,7 +10,7 @@ VERSION="$1"
 UPSTREAM_REPO="bloa-lang/bloa-src"
 PKGNAME="bloa"
 
-REPO_ROOT="$(pwd)"
+REPO_ROOT="$(git rev-parse --show-toplevel)"
 POOL_DIR="$REPO_ROOT/pool/main/b/${PKGNAME}"
 DIST_ROOT="$REPO_ROOT/dists/stable"
 DIST_DIR="$DIST_ROOT/main"
