@@ -3,22 +3,28 @@ Label: bloa-src
 Suite: stable
 Version: 1.0
 Codename: stable
-Date: Wed, 04 Mar 2026 08:32:18 UTC
-Architectures: aarch64 amd64
+Date: Wed, 04 Mar 2026 08:34:23 UTC
+Architectures: aarch64 amd64 i386
 Components: main
 Description: Official bloa-src APT repository stable release
 MD5Sum:
- a879ff7da8a8d11d27ce2a5b6528f243 435 main/binary-aarch64/Packages
- 0df47ae3f9ed46f399eea7de9daf29e6 326 main/binary-aarch64/Packages.gz
- b4a8c6b6d5fb0d59810d9741ed5cfba1 313 main/binary-amd64/Packages.gz
- c3bd5cd45e1ab19901ff237c0ce53673 402 main/binary-amd64/Packages
+ ddd7164f4465fbb44db972d1e5f9dbf4 400 main/binary-i386/Packages
+ 235b89294fbf90fa91e790654e492e08 435 main/binary-aarch64/Packages
+ c6480dee0f5a61b774145f2013a4e34c 310 main/binary-i386/Packages.gz
+ 3f6a7a976e18ab1341a5d3054be02048 326 main/binary-aarch64/Packages.gz
+ 5c9852a9f4852a749cc36dfea9baff96 312 main/binary-amd64/Packages.gz
+ 9ca80e6efe35ef9ec0f65e6981833077 402 main/binary-amd64/Packages
 SHA1:
- 497230a66ea25cd0b1409493f01002bc1c02e820 435 main/binary-aarch64/Packages
- c1e579dcf5ba5d5a8073b6673cd4bdd9907d98cf 326 main/binary-aarch64/Packages.gz
- 20462e04010b6a48ee805e8202f9b27b4428ebd8 313 main/binary-amd64/Packages.gz
- b2cb88c4c40e1dc7583b9b7be09744db58e90542 402 main/binary-amd64/Packages
+ 3b82c4aec33f3176ab7a67f2ba1edbb7bdaaf842 400 main/binary-i386/Packages
+ 372347634f260b1b0d458acc31da36055045630b 435 main/binary-aarch64/Packages
+ 5bdb5a0071228336b3b692c4671241fcef629147 310 main/binary-i386/Packages.gz
+ 99d2a1a396adf6254cc6bd6d883147d956d9632f 326 main/binary-aarch64/Packages.gz
+ 98f217b0ef029f2146595a4bf8f83de137684c32 312 main/binary-amd64/Packages.gz
+ 56284af1b8ed4db5194cc634e022e0bc813c6d2a 402 main/binary-amd64/Packages
 SHA256:
- c14b8762f86eb623f240891b9f2a69791dc1e956a21ac34dc1abd9288f794e82 435 main/binary-aarch64/Packages
- 04d72a937579d770d349089ada56350a74822b0e660c68a21b3fabc6f2cf9371 326 main/binary-aarch64/Packages.gz
- 263c2ed2083a4c5851872c9e631636474a8488feff84f851d7ffdacb8408434a 313 main/binary-amd64/Packages.gz
- 2d9198c138ffd1665c006eb85e718d0b98c43d72e7f4dc89eb9ead39b74ff2d0 402 main/binary-amd64/Packages
+ 70b9e006c392e4960625b4ab5b97e36c18a3a72c9617b07bae2a600e1ad9ece3 400 main/binary-i386/Packages
+ 9d897fd10e813f634cb3d2d65156eb5c3ee2c6df8fcde9ab85063780263d6aaa 435 main/binary-aarch64/Packages
+ 00400b3b895a150366ad2298d227134135472a7eed785497694a866fa6a29853 310 main/binary-i386/Packages.gz
+ e0e3f14cd339213930f4f8ff9d3cc37ba78b8cbc97b9d016eaf4c8a0fe460365 326 main/binary-aarch64/Packages.gz
+ 83ae32d62465e10785eb991c9a46de6ca2672f0529a267d58396ced22f1a73a8 312 main/binary-amd64/Packages.gz
+ 6c5fda4ad9585c7bc250ae3d464e6d49015d292b556fb646e9f28fb87fbbaa31 402 main/binary-amd64/Packages

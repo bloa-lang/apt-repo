@@ -1,0 +1,13 @@
+Package: bloa
+Version: 0.2.0-alpha
+Architecture: i386
+Maintainer: bloa <noreply@local>
+Filename: /tmp/tmp.cseE8HEzqq/bloa_0.2.0-alpha_i386.deb
+Size: 72292
+MD5sum: 303b8cccb928c0d26b7b5f04e5fa8586
+SHA1: 8fb35888fb25185e3e8d33f3f0c88bd493119344
+SHA256: 89de7f416c2408c400e3bf2e7154d0255d2cdb6b92da338ef8365613c096b9f6
+Section: utils
+Priority: optional
+Description: bloa language runtime (0.2.0-alpha)
+
