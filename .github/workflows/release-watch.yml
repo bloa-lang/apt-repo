@@ -38,7 +38,7 @@ jobs:
             echo "Latest upstream tag = $latest"
 
             # determine previously built version by examining pool directory
-            PKGNAME="bloa-src"
+            PKGNAME="bloa"
             prev=""
             if ls pool/main/b/$PKGNAME/*.deb 2>/dev/null | grep -q .; then
               # sort by version embedded in filename (assumes format pkg_<ver>_*)
