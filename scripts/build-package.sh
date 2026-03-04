@@ -45,22 +45,37 @@ done <<< "$asset_urls"
 # update Packages index for each architecture
 echo "Regenerating package indexes for all architectures"
 
-for arch in amd64 aarch64; do
+# determine target architectures by inspecting existing dists directories;
+# if none found, fall back to common arches
+arches=()
+if [ -d "$DIST_DIR" ]; then
+  while IFS= read -r d; do
+    name=$(basename "$d")
+    case "$name" in
+      binary-*) arches+=("${name#binary-}") ;;
+    esac
+  done < <(find "$DIST_DIR" -maxdepth 1 -type d -name 'binary-*' | sort)
+fi
+
+if [ ${#arches[@]} -eq 0 ]; then
+  arches=(amd64 aarch64 i386)
+fi
+
+for arch in "${arches[@]}"; do
   mkdir -p "$DIST_DIR/binary-${arch}"
   echo "Processing architecture: $arch"
-  
+
   # create temporary directory with symlinks to matching .deb files
   tmppool=$(mktemp -d)
-  trap "rm -rf '$tmppool'" EXIT
-  
-  # find all .deb files in pool that match this architecture
+
+  # find all .deb files in pool that match this architecture (or arch-independent)
   found=0
   while IFS= read -r debfile; do
     [ -z "$debfile" ] && continue
     ln -s "$debfile" "$tmppool/$(basename "$debfile")"
-    ((found++))
-  done < <(find "$POOL_DIR" \( -name "*_${arch}.deb" -o -name "*_all.deb" \) | sort)
-  
+    found=$((found+1))
+  done < <(find "$POOL_DIR" -type f -name "*_${arch}.deb" -o -name "*_all.deb" | sort)
+
   if [ $found -eq 0 ]; then
     echo "  No packages found for $arch, creating empty index"
     : > "$DIST_DIR/binary-${arch}/Packages"
@@ -70,6 +85,8 @@ for arch in amd64 aarch64; do
     dpkg-scanpackages "$tmppool" /dev/null > "$DIST_DIR/binary-${arch}/Packages"
     gzip -9c < "$DIST_DIR/binary-${arch}/Packages" > "$DIST_DIR/binary-${arch}/Packages.gz"
   fi
+
+  rm -rf "$tmppool"
 done
 
 echo "Package build complete."
