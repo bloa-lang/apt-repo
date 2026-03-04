@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Determine latest upstream release
+      - name: Determine latest upstream release and existing package version
         id: check
         run: |
           set -eux
@@ -22,17 +22,19 @@ jobs:
           latest=$(curl -sL "$api" | jq -r .tag_name)
           echo "Latest upstream tag = $latest"
 
-          if [ -f .latest_release ]; then
-            old=$(cat .latest_release)
-          else
-            old=""
+          # determine previously built version by examining pool directory
+          PKGNAME="bloa-src"
+          prev=""
+          if ls pool/main/b/$PKGNAME/*.deb 2>/dev/null | grep -q .; then
+            # sort by version embedded in filename (assumes format pkg_<ver>_*)
+            prev=$(basename $(ls pool/main/b/$PKGNAME/*.deb | sort -V | tail -n1) | \
+              sed -n 's/^.*_\(.*\)_.*\.deb$/\1/p')
           fi
-          echo "Previous recorded tag = $old"
+          echo "Previous package version = $prev"
 
           echo "latest=$latest" >> $GITHUB_OUTPUT
-          if [ "$latest" != "$old" ]; then
+          if [ "$latest" != "$prev" ]; then
             echo "new=true" >> $GITHUB_OUTPUT
-            echo "$latest" > .latest_release
           else
             echo "new=false" >> $GITHUB_OUTPUT
           fi
@@ -48,6 +50,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add pool dists .latest_release
+          git add pool dists
           git diff --quiet || git commit -m "Automated build for release ${{ steps.check.outputs.latest }}"
           git push
