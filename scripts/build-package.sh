@@ -53,8 +53,12 @@ for arch in "${arches[@]}"; do
 
   echo "Generating Packages index for $arch"
 
-  dpkg-scanpackages -a "$arch" "$POOL_DIR" /dev/null \
+  pushd "$REPO_ROOT" >/dev/null
+
+  dpkg-scanpackages -a "$arch" pool /dev/null \
     > "$DIST_DIR/binary-$arch/Packages"
+
+  popd >/dev/null
 
   gzip -9c "$DIST_DIR/binary-$arch/Packages" \
     > "$DIST_DIR/binary-$arch/Packages.gz"
