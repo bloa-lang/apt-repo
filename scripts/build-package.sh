@@ -89,4 +89,7 @@ for arch in "${arches[@]}"; do
   rm -rf "$tmppool"
 done
 
+echo "Generating Release file"
+bash "$(dirname "$0")/generate-release.sh" "$DIST_DIR" "stable" "main"
+
 echo "Package build complete."

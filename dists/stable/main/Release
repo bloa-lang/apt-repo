@@ -1,0 +1,24 @@
+Origin: bloa-lang
+Label: bloa-src
+Suite: stable
+Version: 1.0
+Codename: stable
+Date: Wed, 04 Mar 2026 08:32:18 UTC
+Architectures: aarch64 amd64
+Components: main
+Description: Official bloa-src APT repository stable release
+MD5Sum:
+ a879ff7da8a8d11d27ce2a5b6528f243 435 main/binary-aarch64/Packages
+ 0df47ae3f9ed46f399eea7de9daf29e6 326 main/binary-aarch64/Packages.gz
+ b4a8c6b6d5fb0d59810d9741ed5cfba1 313 main/binary-amd64/Packages.gz
+ c3bd5cd45e1ab19901ff237c0ce53673 402 main/binary-amd64/Packages
+SHA1:
+ 497230a66ea25cd0b1409493f01002bc1c02e820 435 main/binary-aarch64/Packages
+ c1e579dcf5ba5d5a8073b6673cd4bdd9907d98cf 326 main/binary-aarch64/Packages.gz
+ 20462e04010b6a48ee805e8202f9b27b4428ebd8 313 main/binary-amd64/Packages.gz
+ b2cb88c4c40e1dc7583b9b7be09744db58e90542 402 main/binary-amd64/Packages
+SHA256:
+ c14b8762f86eb623f240891b9f2a69791dc1e956a21ac34dc1abd9288f794e82 435 main/binary-aarch64/Packages
+ 04d72a937579d770d349089ada56350a74822b0e660c68a21b3fabc6f2cf9371 326 main/binary-aarch64/Packages.gz
+ 263c2ed2083a4c5851872c9e631636474a8488feff84f851d7ffdacb8408434a 313 main/binary-amd64/Packages.gz
+ 2d9198c138ffd1665c006eb85e718d0b98c43d72e7f4dc89eb9ead39b74ff2d0 402 main/binary-amd64/Packages
