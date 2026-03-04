@@ -1,9 +1,4 @@
-#!/bin/bash
-# scripts/build-package.sh
-# This script is invoked by the GitHub Actions workflow when a new release of
-# bloa-src is detected. It downloads the release asset .deb files and updates
-# the apt repository indexes, handling multiple architectures correctly.
-
+#!/usr/bin/env bash
 set -euo pipefail
 
 if [ $# -ne 1 ]; then
@@ -15,88 +10,74 @@ VERSION="$1"
 UPSTREAM_REPO="bloa-lang/bloa-src"
 PKGNAME="bloa"
 
-# paths inside apt-repo
-POOL_DIR="$(pwd)/pool/main/b/${PKGNAME}"
-DIST_DIR="$(pwd)/dists/stable/main"
+REPO_ROOT="$(pwd)"
+POOL_DIR="$REPO_ROOT/pool/main/b/${PKGNAME}"
+DIST_ROOT="$REPO_ROOT/dists/stable"
+DIST_DIR="$DIST_ROOT/main"
 
 mkdir -p "$POOL_DIR"
 
-# find all .deb assets for this version on GitHub
-echo "Looking for .deb assets in upstream release ${VERSION}"
-release_info=$(curl -sL "https://api.github.com/repos/${UPSTREAM_REPO}/releases/tags/${VERSION}")
-asset_urls=$(echo "$release_info" | jq -r '.assets[] | select(.name | test("bloa.*\\.deb$")) | .browser_download_url')
+echo "Fetching release metadata for $VERSION"
+release_json=$(curl -sL "https://api.github.com/repos/${UPSTREAM_REPO}/releases/tags/${VERSION}")
+
+asset_urls=$(echo "$release_json" | jq -r '.assets[] | select(.name | test("\\.deb$")) | .browser_download_url')
 
 if [ -z "$asset_urls" ]; then
-  echo "ERROR: no .deb assets matching pattern found for tag $VERSION" >&2
+  echo "ERROR: No .deb assets found for tag $VERSION"
   exit 1
 fi
 
-# download all matching .deb files
-echo "Downloading .deb assets..."
-while IFS= read -r asset_url; do
-  [ -z "$asset_url" ] && continue
-  asset_name=$(basename "$asset_url")
-  echo "  Downloading: $asset_name"
-  curl -sL -o "$asset_name" "$asset_url"
-  cp "$asset_name" "$POOL_DIR/"
-  rm "$asset_name"
+echo "Downloading assets..."
+while IFS= read -r url; do
+  [ -z "$url" ] && continue
+  name=$(basename "$url")
+  echo "  → $name"
+  curl -sL -o "$POOL_DIR/$name" "$url"
 done <<< "$asset_urls"
 
-# update Packages index for each architecture
-echo "Regenerating package indexes for all architectures"
+echo "Detecting architectures..."
+mapfile -t arches < <(
+  find "$POOL_DIR" -type f -name "*.deb" \
+  | sed -n 's/.*_\([^_]\+\)\.deb$/\1/p' \
+  | sort -u
+)
 
-# detect architectures by scanning .deb files in pool
-arches=()
-if [ -d "$POOL_DIR" ]; then
-  while IFS= read -r debfile; do
-    [ -z "$debfile" ] && continue
-    # extract architecture from filename (format: pkg_version_ARCH.deb)
-    arch=$(basename "$debfile" | sed -n 's/.*_\([^_]\+\)\.deb$/\1/p')
-    # skip arch-independent packages (marked as 'all')
-    [ "$arch" = "all" ] && continue
-    # add to list if not already present
-    if ! printf '%s\n' "${arches[@]}" 2>/dev/null | grep -q "^$arch$"; then
-      arches+=("$arch")
-    fi
-  done < <(find "$POOL_DIR" -maxdepth 1 -type f -name "*.deb" | sort)
-fi
+[ ${#arches[@]} -eq 0 ] && arches=("aarch64")
 
-if [ ${#arches[@]} -eq 0 ]; then
-  echo "WARNING: No .deb files found in pool; using fallback architectures"
-  arches=(amd64 aarch64 i386)
-fi
-
-echo "Detected architectures: ${arches[*]}"
+echo "Architectures: ${arches[*]}"
 
 for arch in "${arches[@]}"; do
-  mkdir -p "$DIST_DIR/binary-${arch}"
-  echo "Processing architecture: $arch"
+  mkdir -p "$DIST_DIR/binary-$arch"
 
-  # create temporary directory with symlinks to matching .deb files
-  tmppool=$(mktemp -d)
+  echo "Generating Packages for $arch"
 
-  # find all .deb files in pool that match this architecture (or arch-independent)
-  found=0
-  while IFS= read -r debfile; do
-    [ -z "$debfile" ] && continue
-    ln -s "$debfile" "$tmppool/$(basename "$debfile")"
-    found=$((found+1))
-  done < <(find "$POOL_DIR" -type f -name "*_${arch}.deb" -o -name "*_all.deb" | sort)
+  pushd "$REPO_ROOT" >/dev/null
 
-  if [ $found -eq 0 ]; then
-    echo "  No packages found for $arch, creating empty index"
-    : > "$DIST_DIR/binary-${arch}/Packages"
-    gzip -9c < "$DIST_DIR/binary-${arch}/Packages" > "$DIST_DIR/binary-${arch}/Packages.gz"
-  else
-    echo "  Found $found package(s) for $arch"
-    dpkg-scanpackages "$tmppool" /dev/null > "$DIST_DIR/binary-${arch}/Packages"
-    gzip -9c < "$DIST_DIR/binary-${arch}/Packages" > "$DIST_DIR/binary-${arch}/Packages.gz"
-  fi
+  dpkg-scanpackages pool /dev/null \
+    | awk -v A="$arch" '
+      /^Package:/ { keep=0 }
+      /^Architecture:/ {
+          if ($2==A || $2=="all") keep=1
+      }
+      { if (keep) print }
+      /^$/ { if (keep) print }
+    ' > "$DIST_DIR/binary-$arch/Packages"
 
-  rm -rf "$tmppool"
+  gzip -9c "$DIST_DIR/binary-$arch/Packages" \
+    > "$DIST_DIR/binary-$arch/Packages.gz"
+
+  popd >/dev/null
 done
 
-echo "Generating Release file"
-bash "$(dirname "$0")/generate-release.sh" "$DIST_DIR" "stable" "main"
+# ensure binary-all exists (avoid 404)
+if [ ! -d "$DIST_DIR/binary-all" ]; then
+  mkdir -p "$DIST_DIR/binary-all"
+  : > "$DIST_DIR/binary-all/Packages"
+  gzip -9c "$DIST_DIR/binary-all/Packages" \
+    > "$DIST_DIR/binary-all/Packages.gz"
+fi
 
-echo "Package build complete."
+echo "Generating Release file"
+bash "$(dirname "$0")/generate-release.sh" "$DIST_ROOT" "stable" "main"
+
+echo "APT repository updated successfully."
