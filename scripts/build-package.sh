@@ -21,54 +21,29 @@ DIST_DIR="$(pwd)/dists/stable/main"
 
 mkdir -p "$POOL_DIR"
 
-# download source tarball for the version
-TARBALL_URL="https://github.com/${UPSTREAM_REPO}/archive/refs/tags/${VERSION}.tar.gz"
-SRC_ARCHIVE="${PKGNAME}-${VERSION}.tar.gz"
+# find .deb asset for the version on GitHub
 
-echo "Downloading upstream source: $TARBALL_URL"
-curl -sL -o "$SRC_ARCHIVE" "$TARBALL_URL"
+echo "Looking for .deb asset in upstream release ${VERSION}"
+release_info=$(curl -sL "https://api.github.com/repos/${UPSTREAM_REPO}/releases/tags/${VERSION}")
+asset_url=$(echo "$release_info" | jq -r '.assets[] | select(.name | test("bloa.*\\.deb$")) | .browser_download_url' | head -n1)
 
-# extract, build package
-WORKDIR=$(mktemp -d)
-trap 'rm -rf "$WORKDIR"' EXIT
+if [ -z "$asset_url" ] || [ "$asset_url" = "null" ]; then
+  echo "ERROR: no .deb asset matching pattern found for tag $VERSION" >&2
+  exit 1
+fi
 
-echo "Extracting source into $WORKDIR"
-tar -xzf "$SRC_ARCHIVE" -C "$WORKDIR"
-cd "$WORKDIR/${PKGNAME}-${VERSION#v}" || exit 1
+asset_name=$(basename "$asset_url")
+echo "Downloading asset $asset_name"
+curl -sL -o "$asset_name" "$asset_url"
 
-# In a real project you'd run the build commands here; for this example we
-# just create a dummy control file and a trivial binary to package.
+# copy into pool
+cp "$asset_name" "$POOL_DIR/"
 
-echo "Creating Debian packaging tree"
-mkdir -p debian
-cat > debian/control <<'EOF'
-Source: ${PKGNAME}
-Section: misc
-Priority: optional
-Maintainer: APT Repo <no-reply@example.com>
-Standards-Version: 4.5.0
+# optionally rename to uniform scheme
+# you could uncomment below if you want predictable filenames
+# newname="${PKGNAME}_${VERSION#v}_${asset_name##*_}"
+# mv "$POOL_DIR/$asset_name" "$POOL_DIR/$newname"
 
-Package: ${PKGNAME}
-Architecture: any
-Depends: 
-Description: Dummy package for bloa-src version ${VERSION}
- A placeholder package built by the apt-repo automation.
-EOF
-
-# build package using dpkg-deb
-mkdir -p usr/bin
-cat > usr/bin/${PKGNAME} <<'EOF'
-#!/bin/bash
-echo "This is a dummy bloa-src package version ${VERSION}"
-EOF
-chmod +x usr/bin/${PKGNAME}
-
-PKGFILE="${PKGNAME}_${VERSION#v}_amd64.deb"
-echo "Building .deb package: $PKGFILE"
-dpkg-deb --build . "$PKGFILE"
-
-# move package into pool
-mv "$PKGFILE" "$POOL_DIR/"
 
 # update Packages index for each architecture
 for arch in amd64 aarch64; do

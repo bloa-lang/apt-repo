@@ -20,8 +20,9 @@ The logic lives primarily in `scripts/build-package.sh`, which is executed by th
 workflow whenever a version change is observed.  The workflow triggers on a
 periodic schedule and can be run manually via `workflow_dispatch`.
 
-The file `.latest_release` records the most recent tag seen, so even if the
-workflow runs multiple times without a new release, it will be a no-op.
+The workflow no longer needs a separate tracker file; it determines the
+currently built version by inspecting `pool/` (or the `dists/` indexes). This
+means any existing packages are used to figure out whether a release is new.
 
 ### Adding or modifying architecture support
 
