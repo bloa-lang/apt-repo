@@ -4,7 +4,12 @@ on:
   schedule:
     # every 6 hours
     - cron: '0 */6 * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version/tag to build (leave empty for auto-detect)'
+        required: false
+        default: ''
 
 jobs:
   check_and_build:
@@ -18,26 +23,35 @@ jobs:
         run: |
           set -eux
           UPSTREAM="bloa-lang/bloa-src"
-          api="https://api.github.com/repos/$UPSTREAM/releases/latest"
-          latest=$(curl -sL "$api" | jq -r .tag_name)
-          echo "Latest upstream tag = $latest"
 
-          # determine previously built version by examining pool directory
-          PKGNAME="bloa-src"
-          prev=""
-          if ls pool/main/b/$PKGNAME/*.deb 2>/dev/null | grep -q .; then
-            # sort by version embedded in filename (assumes format pkg_<ver>_*)
-            prev=$(basename $(ls pool/main/b/$PKGNAME/*.deb | sort -V | tail -n1) | \
-              sed -n 's/^.*_\(.*\)_.*\.deb$/\1/p')
-          fi
-          echo "Previous package version = $prev"
-
-          echo "latest=$latest" >> $GITHUB_OUTPUT
-          if [ "$latest" != "$prev" ]; then
+          # if version is provided manually, use it; otherwise auto-detect
+          if [ -n "${{ github.event.inputs.version }}" ]; then
+            latest="${{ github.event.inputs.version }}"
+            echo "Using manually provided version: $latest"
             echo "new=true" >> $GITHUB_OUTPUT
           else
-            echo "new=false" >> $GITHUB_OUTPUT
+            api="https://api.github.com/repos/$UPSTREAM/releases/latest"
+            latest=$(curl -sL "$api" | jq -r .tag_name)
+            echo "Latest upstream tag = $latest"
+
+            # determine previously built version by examining pool directory
+            PKGNAME="bloa-src"
+            prev=""
+            if ls pool/main/b/$PKGNAME/*.deb 2>/dev/null | grep -q .; then
+              # sort by version embedded in filename (assumes format pkg_<ver>_*)
+              prev=$(basename $(ls pool/main/b/$PKGNAME/*.deb | sort -V | tail -n1) | \
+                sed -n 's/^.*_\(.*\)_.*\.deb$/\1/p')
+            fi
+            echo "Previous package version = $prev"
+
+            if [ "$latest" != "$prev" ]; then
+              echo "new=true" >> $GITHUB_OUTPUT
+            else
+              echo "new=false" >> $GITHUB_OUTPUT
+            fi
           fi
+
+          echo "latest=$latest" >> $GITHUB_OUTPUT
 
       - name: Build package for new release
         if: steps.check.outputs.new == 'true'
