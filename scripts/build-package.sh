@@ -45,21 +45,28 @@ done <<< "$asset_urls"
 # update Packages index for each architecture
 echo "Regenerating package indexes for all architectures"
 
-# determine target architectures by inspecting existing dists directories;
-# if none found, fall back to common arches
+# detect architectures by scanning .deb files in pool
 arches=()
-if [ -d "$DIST_DIR" ]; then
-  while IFS= read -r d; do
-    name=$(basename "$d")
-    case "$name" in
-      binary-*) arches+=("${name#binary-}") ;;
-    esac
-  done < <(find "$DIST_DIR" -maxdepth 1 -type d -name 'binary-*' | sort)
+if [ -d "$POOL_DIR" ]; then
+  while IFS= read -r debfile; do
+    [ -z "$debfile" ] && continue
+    # extract architecture from filename (format: pkg_version_ARCH.deb)
+    arch=$(basename "$debfile" | sed -n 's/.*_\([^_]\+\)\.deb$/\1/p')
+    # skip arch-independent packages (marked as 'all')
+    [ "$arch" = "all" ] && continue
+    # add to list if not already present
+    if ! printf '%s\n' "${arches[@]}" 2>/dev/null | grep -q "^$arch$"; then
+      arches+=("$arch")
+    fi
+  done < <(find "$POOL_DIR" -maxdepth 1 -type f -name "*.deb" | sort)
 fi
 
 if [ ${#arches[@]} -eq 0 ]; then
+  echo "WARNING: No .deb files found in pool; using fallback architectures"
   arches=(amd64 aarch64 i386)
 fi
+
+echo "Detected architectures: ${arches[*]}"
 
 for arch in "${arches[@]}"; do
   mkdir -p "$DIST_DIR/binary-${arch}"
