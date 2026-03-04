@@ -15,6 +15,8 @@ POOL_DIR="$REPO_ROOT/pool/main/b/${PKGNAME}"
 DIST_ROOT="$REPO_ROOT/dists/stable"
 DIST_DIR="$DIST_ROOT/main"
 
+echo "Cleaning old pool directory..."
+rm -rf "$POOL_DIR"
 mkdir -p "$POOL_DIR"
 
 echo "Fetching release metadata for $VERSION"
@@ -44,40 +46,29 @@ mapfile -t arches < <(
 
 [ ${#arches[@]} -eq 0 ] && arches=("aarch64")
 
-echo "Architectures: ${arches[*]}"
+echo "Architectures detected: ${arches[*]}"
 
 for arch in "${arches[@]}"; do
   mkdir -p "$DIST_DIR/binary-$arch"
 
-  echo "Generating Packages for $arch"
+  echo "Generating Packages index for $arch"
 
-  pushd "$REPO_ROOT" >/dev/null
-
-  dpkg-scanpackages pool /dev/null \
-    | awk -v A="$arch" '
-      /^Package:/ { keep=0 }
-      /^Architecture:/ {
-          if ($2==A || $2=="all") keep=1
-      }
-      { if (keep) print }
-      /^$/ { if (keep) print }
-    ' > "$DIST_DIR/binary-$arch/Packages"
+  dpkg-scanpackages -a "$arch" "$POOL_DIR" /dev/null \
+    > "$DIST_DIR/binary-$arch/Packages"
 
   gzip -9c "$DIST_DIR/binary-$arch/Packages" \
     > "$DIST_DIR/binary-$arch/Packages.gz"
-
-  popd >/dev/null
 done
 
-# ensure binary-all exists (avoid 404)
-if [ ! -d "$DIST_DIR/binary-all" ]; then
-  mkdir -p "$DIST_DIR/binary-all"
-  : > "$DIST_DIR/binary-all/Packages"
-  gzip -9c "$DIST_DIR/binary-all/Packages" \
-    > "$DIST_DIR/binary-all/Packages.gz"
-fi
+echo "Ensuring binary-all exists..."
+mkdir -p "$DIST_DIR/binary-all"
+dpkg-scanpackages -a all "$POOL_DIR" /dev/null \
+  > "$DIST_DIR/binary-all/Packages" || true
+
+gzip -9c "$DIST_DIR/binary-all/Packages" \
+  > "$DIST_DIR/binary-all/Packages.gz"
 
 echo "Generating Release file"
 bash "$(dirname "$0")/generate-release.sh" "$DIST_ROOT" "stable" "main"
 
-echo "APT repository updated successfully."
+echo "APT repository for $PKGNAME version $VERSION updated successfully."
