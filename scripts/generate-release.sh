@@ -13,13 +13,17 @@ if [ ! -d "$DIST_DIR" ]; then
   exit 1
 fi
 
-declare -a arch_list
-declare -a md5_lines
-declare -a sha1_lines
-declare -a sha256_lines
+arch_list=()
+md5_lines=()
+sha256_lines=()
 
-for binary_dir in $(ls -d "$DIST_DIR"/binary-* 2>/dev/null | sort); do
-  arch=$(basename "$binary_dir" | sed 's/^binary-//')
+shopt -s nullglob
+
+for binary_dir in "$DIST_DIR"/binary-*; do
+  [ -d "$binary_dir" ] || continue
+
+  arch="${binary_dir##*/}"
+  arch="${arch#binary-}"
   arch_list+=("$arch")
 
   for file in Packages Packages.gz; do
@@ -30,17 +34,20 @@ for binary_dir in $(ls -d "$DIST_DIR"/binary-* 2>/dev/null | sort); do
     size=$(stat -c%s "$full")
 
     md5=$(md5sum "$full" | awk '{print $1}')
-    sha1=$(sha1sum "$full" | awk '{print $1}')
     sha256=$(sha256sum "$full" | awk '{print $1}')
 
     md5_lines+=(" $md5 $size $rel_path")
-    sha1_lines+=(" $sha1 $size $rel_path")
     sha256_lines+=(" $sha256 $size $rel_path")
   done
 done
 
+if [ ${#arch_list[@]} -eq 0 ]; then
+  echo "ERROR: No architectures detected"
+  exit 1
+fi
+
 arch_str=$(IFS=' '; echo "${arch_list[*]}")
-date_str=$(date -u +"%a, %d %b %Y %H:%M:%S UTC")
+date_str=$(date -u +"%a, %d %b %Y %Y %H:%M:%S UTC")
 
 {
   echo "Origin: bloa-lang"
@@ -53,8 +60,6 @@ date_str=$(date -u +"%a, %d %b %Y %H:%M:%S UTC")
   echo "Description: Official bloa APT repository"
   echo "MD5Sum:"
   printf "%s\n" "${md5_lines[@]}" | sort
-  echo "SHA1:"
-  printf "%s\n" "${sha1_lines[@]}" | sort
   echo "SHA256:"
   printf "%s\n" "${sha256_lines[@]}" | sort
 } > "$RELEASE_FILE"
