@@ -1,0 +1,26 @@
+Origin: bloa-lang
+Label: bloa
+Suite: stable
+Codename: stable
+Date: Sat, 07 Mar 2026 2026 01:04:57 UTC
+Architectures: aarch64 all amd64 i386
+Components: main
+Description: Official bloa APT repository
+MD5Sum:
+ 002184f9855453d57987c83b08b31c06 315 main/binary-amd64/Packages.gz
+ 02389eefe8adf8f36c1d512ed5a4dc3f 420 main/binary-all/Packages
+ 1801b5890970481ab8763699e0cb9c68 399 main/binary-amd64/Packages
+ 6676794b905ae2c1b240ea461b114b1d 314 main/binary-i386/Packages.gz
+ a4f828460207085ab635bbd0735746c6 327 main/binary-aarch64/Packages.gz
+ a7873a5074bdb35c4a85526180c9f9fe 432 main/binary-aarch64/Packages
+ bf12ff245e7772cebb4c319e2fe4a27f 397 main/binary-i386/Packages
+ e19359c50bac6adcff2b843b2f9bcce2 326 main/binary-all/Packages.gz
+SHA256:
+ 153a30745ac27a659d43cd8c90e3c03b259bfa0e1ced90e86477fc040b313157 420 main/binary-all/Packages
+ 365c01f977670b1c6ec3be1280b6ef7ded7de3a539b26ca48c3a0e32abf524bc 314 main/binary-i386/Packages.gz
+ 3c0490ef743ea1443a66e0eda80b99c216fb3dbae4360575a208bcdcf87ba9f5 315 main/binary-amd64/Packages.gz
+ 738582728002582fa6f837e0526aa53231b244e48c933e2437cfae596e7c7496 399 main/binary-amd64/Packages
+ 79e80c4d09df90f9e3830b2a67d4a1d8347548505a3d0c663eb200ba9ef7c2e2 432 main/binary-aarch64/Packages
+ c6f8c4d404631fa78d251edf0fa2859f8ccb8a79c448f5598cc6b13e100f949c 397 main/binary-i386/Packages
+ e8a03863bdb7c1f964bec9bae6d9bdbc123956ffb26a6d562427e42072afe80e 326 main/binary-all/Packages.gz
+ fee924d513b391e28522c9be5c0b7b46851f7c7978b44e8f8671a07ec7a88613 327 main/binary-aarch64/Packages.gz
