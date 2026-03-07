@@ -2,25 +2,29 @@ Origin: bloa-lang
 Label: bloa
 Suite: stable
 Codename: stable
-Date: Sat, 07 Mar 2026 2026 01:04:57 UTC
-Architectures: aarch64 all amd64 i386
+Date: Sat, 07 Mar 2026 2026 08:14:50 UTC
+Architectures: aarch64 all amd64 arm i386
 Components: main
 Description: Official bloa APT repository
 MD5Sum:
- 002184f9855453d57987c83b08b31c06 315 main/binary-amd64/Packages.gz
- 02389eefe8adf8f36c1d512ed5a4dc3f 420 main/binary-all/Packages
- 1801b5890970481ab8763699e0cb9c68 399 main/binary-amd64/Packages
- 6676794b905ae2c1b240ea461b114b1d 314 main/binary-i386/Packages.gz
- a4f828460207085ab635bbd0735746c6 327 main/binary-aarch64/Packages.gz
- a7873a5074bdb35c4a85526180c9f9fe 432 main/binary-aarch64/Packages
- bf12ff245e7772cebb4c319e2fe4a27f 397 main/binary-i386/Packages
- e19359c50bac6adcff2b843b2f9bcce2 326 main/binary-all/Packages.gz
+ 0d9f84dc13af0d533703201caf123a86 311 main/binary-arm/Packages.gz
+ 14130c01de583a41383c97971c5eba3b 385 main/binary-arm/Packages
+ 3d447801d3cd2bb4b2efb3f7082fa995 314 main/binary-aarch64/Packages.gz
+ 576f913f1d447acd205e2791b02f6962 318 main/binary-amd64/Packages.gz
+ 5c8f6a84360280637457b638087c39ef 397 main/binary-aarch64/Packages
+ 690659c455cc95e6697a5f36e19908df 318 main/binary-i386/Packages.gz
+ 8a16e5d28af596af557033ff87f026e8 29 main/binary-all/Packages.gz
+ 94b5572ac0d41056258792a150f13575 398 main/binary-amd64/Packages
+ ad261fc52aef1c609f87a5ffbf7aadfd 395 main/binary-i386/Packages
+ d41d8cd98f00b204e9800998ecf8427e 0 main/binary-all/Packages
 SHA256:
- 153a30745ac27a659d43cd8c90e3c03b259bfa0e1ced90e86477fc040b313157 420 main/binary-all/Packages
- 365c01f977670b1c6ec3be1280b6ef7ded7de3a539b26ca48c3a0e32abf524bc 314 main/binary-i386/Packages.gz
- 3c0490ef743ea1443a66e0eda80b99c216fb3dbae4360575a208bcdcf87ba9f5 315 main/binary-amd64/Packages.gz
- 738582728002582fa6f837e0526aa53231b244e48c933e2437cfae596e7c7496 399 main/binary-amd64/Packages
- 79e80c4d09df90f9e3830b2a67d4a1d8347548505a3d0c663eb200ba9ef7c2e2 432 main/binary-aarch64/Packages
- c6f8c4d404631fa78d251edf0fa2859f8ccb8a79c448f5598cc6b13e100f949c 397 main/binary-i386/Packages
- e8a03863bdb7c1f964bec9bae6d9bdbc123956ffb26a6d562427e42072afe80e 326 main/binary-all/Packages.gz
- fee924d513b391e28522c9be5c0b7b46851f7c7978b44e8f8671a07ec7a88613 327 main/binary-aarch64/Packages.gz
+ 118894539ef4c12c9701eeaf7b9b97a731aa94f8d3be075b15e1b970ff605a91 397 main/binary-aarch64/Packages
+ 15dda472cbded803589160f3ff9d5c97de8ccca890cac0b3ef56a0e34f43e617 318 main/binary-i386/Packages.gz
+ 27c449a259d9b37a67addc5532c21692df3e44774f2ff712552aa9e222cda5a0 385 main/binary-arm/Packages
+ 3c5e16a968a6f005d9cc1be0fac681cce1cb579992b558fa1bf1bdb757f6b7a8 314 main/binary-aarch64/Packages.gz
+ 6d8c6419ab9552c8bd95824b2fe1f441193683d53931325eceb063dca8dd8b5d 395 main/binary-i386/Packages
+ 7bd5ff79dfffff4f13a47b84af015f3c3794e7171bc65e664a140938f88854ca 29 main/binary-all/Packages.gz
+ 90b2a0d2093553692c1db85f6622c92fa44d7ae47fa1a05834cbab6ba64c6ec3 398 main/binary-amd64/Packages
+ 912fbe40614871301a7b870c1a7890fd3b259630a8cb2493433584e1ed83b450 311 main/binary-arm/Packages.gz
+ e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 0 main/binary-all/Packages
+ f38bbe0effd69e9d2eced0171ea2cc89f52ea39a81bc978b11b127af63a42e63 318 main/binary-amd64/Packages.gz
