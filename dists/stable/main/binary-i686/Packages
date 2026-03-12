@@ -1,0 +1,13 @@
+Package: bloa
+Version: 0.2.0-alpha
+Architecture: i686
+Maintainer: bloa-lang
+Filename: pool/main/b/bloa/bloa_0.2.0-alpha_termux_i686.deb
+Size: 72052
+MD5sum: c008d4906791235374f747a0fd69d0c1
+SHA1: caead57e428299f0689ab27906d90180b5776a27
+SHA256: ba56771a72d03678716366df85c923013adc841e10f5d7000c2c4324a4e02189
+Section: utils
+Priority: optional
+Description: Bloa runtime for Termux (i686)
+

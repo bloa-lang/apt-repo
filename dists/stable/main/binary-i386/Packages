@@ -3,10 +3,10 @@ Version: 0.2.0-alpha
 Architecture: i386
 Maintainer: bloa-lang
 Filename: pool/main/b/bloa/bloa_0.2.0-alpha_linux_i386.deb
-Size: 72074
-MD5sum: e4ad42c385a7d3c3436f1c767b2bb3d0
-SHA1: 01cb20a9804b83f0c4d03ede675d3abb09ae41e4
-SHA256: 96f1b5a098c53e36e88fb6666d4ce6870b0403ef972d25fe4ee8b0162a92a792
+Size: 72246
+MD5sum: 9fba55e45eca2fd7a5faa299292ab279
+SHA1: e7faf633535cde58ed636d3ce18f3459927aa632
+SHA256: 1eecd20419c069cc78542950b33926588acb183a13b96bec59fb582eaebae420
 Section: utils
 Priority: optional
 Description: Bloa runtime for Standard Linux (i386)

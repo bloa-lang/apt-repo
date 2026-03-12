@@ -1,0 +1,13 @@
+Package: bloa
+Version: 0.2.0-alpha
+Architecture: x86_64
+Maintainer: bloa-lang
+Filename: pool/main/b/bloa/bloa_0.2.0-alpha_termux_x86_64.deb
+Size: 65598
+MD5sum: d158a4bc72a2d18968da66a126f074d7
+SHA1: 651338741816a7fbd0cf78180347dbee52180507
+SHA256: 590ad9c8c97ff00ea699f35c78d13a4bcb6129a816e7e9d9ee85f85fad213327
+Section: utils
+Priority: optional
+Description: Bloa runtime for Termux (x86_64)
+
