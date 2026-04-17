@@ -1,12 +1,12 @@
 Package: bloa
-Version: 0.2.0-alpha
+Version: 1.0.0-RC1
 Architecture: arm
 Maintainer: bloa-lang
-Filename: pool/main/b/bloa/bloa_0.2.0-alpha_termux_arm.deb
-Size: 58566
-MD5sum: 718a55d30c5e20df99171e0a176d640d
-SHA1: 0b3c3f11f890c5d668620e56b7a11f5d97cea45e
-SHA256: 1b13c28258d1e9b6e82c34ab091671400b0625550e04fb4670d155569a771fa9
+Filename: pool/main/b/bloa/bloa_v1.0.0-RC1_termux_arm.deb
+Size: 788336
+MD5sum: 76e1634fef44afe6be475dbc44ad9b7d
+SHA1: a3feaf293d76c5d8d909ad3bb50bee4070f38138
+SHA256: e445da812cef85d0b8ee9a9f8d7982f7e01ee298502e69aa0dfd732959e59105
 Section: utils
 Priority: optional
 Description: Bloa runtime for Termux (arm)

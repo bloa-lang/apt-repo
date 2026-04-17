@@ -1,12 +1,12 @@
 Package: bloa
-Version: 0.2.0-alpha
+Version: 1.0.0-RC1
 Architecture: armhf
 Maintainer: bloa-lang
-Filename: pool/main/b/bloa/bloa_0.2.0-alpha_linux_armhf.deb
-Size: 58520
-MD5sum: ad7d96fe43d512472f78b94aa3c9ae60
-SHA1: ef3c92b59591de8eb1a220d8b7b71b402614a82b
-SHA256: cf61c2d1c9912ff81433f5f2ee05ff116ee23230d4b9e8e013380331efd2fa13
+Filename: pool/main/b/bloa/bloa_v1.0.0-RC1_linux_armhf.deb
+Size: 99452
+MD5sum: b7cb1b296251deaeb88eae165ff5cc34
+SHA1: f7f6883a5aea7ee735aa70cfaa0051073fae430c
+SHA256: 9f69d506c0a2420230af9ca7fd60d6a3c8c553ae9e17f7d7da04cf04dd0ce5d1
 Section: utils
 Priority: optional
 Description: Bloa runtime for Standard Linux (armhf)

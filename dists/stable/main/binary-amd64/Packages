@@ -1,12 +1,12 @@
 Package: bloa
-Version: 0.2.0-alpha
+Version: 1.0.0-RC1
 Architecture: amd64
 Maintainer: bloa-lang
-Filename: pool/main/b/bloa/bloa_0.2.0-alpha_linux_amd64.deb
-Size: 65572
-MD5sum: 11f01218abaa3993e5a738d88cd1999f
-SHA1: b511bed860a569d7f07d18cbe7f33dc640ad71b2
-SHA256: 28161e29f53b3916e5abfaa72b71ffb52b1348877d54d963b102a68cc73a0191
+Filename: pool/main/b/bloa/bloa_v1.0.0-RC1_linux_amd64.deb
+Size: 108592
+MD5sum: a6934c21608743cbee9d0131bbd1900c
+SHA1: b2617c48d12bdc8ad3fa12e251413d01b7601145
+SHA256: 4c8dd965b48bc45806110adb127492812faeb38927ac17c29c3962dc3b7194cf
 Section: utils
 Priority: optional
 Description: Bloa runtime for Standard Linux (amd64)
